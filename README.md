@@ -1,2 +1,2 @@
 # static-server
-Simple static web server written on C
+Simple static web server written in C
