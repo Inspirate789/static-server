@@ -9,6 +9,7 @@ struct http_response {
     http_status_code_t status_code;
     http_headers_t headers;
     char *body;
+    int attachment_fd;
 };
 
 int http_response_create(http_response_t *response) {
@@ -27,6 +28,9 @@ int http_response_create(http_response_t *response) {
     if (rc != EXIT_SUCCESS) {
         free(tmp_response);
     }
+
+    tmp_response->attachment_fd = -1;
+    *response = tmp_response;
 
     return rc;
 }
@@ -99,8 +103,20 @@ int http_response_set_body(http_response_t response, const char *body) {
     return EXIT_SUCCESS;
 }
 
-int http_response_get_raw(http_response_t response, char **raw_response) {
-     // TODO
+int http_response_set_attachment(http_response_t response, int fd) {
+    if (response == NULL) {
+        log_error("response pointer is NULL");
+        return EXIT_FAILURE;
+    }
+
+    free(response->body);
+    response->attachment_fd = fd;
+
+    return EXIT_SUCCESS;
+}
+
+int http_response_write(http_response_t response, int fd) {
+    // TODO
 }
 
 void http_response_destroy(http_response_t *response) {

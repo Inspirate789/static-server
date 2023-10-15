@@ -196,6 +196,7 @@ int http_request_create(http_request_t *request, const char *raw_request) {
     }
 
     if ((rc = http_request_parse_headers_and_body(tmp_request, lines, n)) == EXIT_SUCCESS) {
+        *request = tmp_request;
         goto exit;
     }
 

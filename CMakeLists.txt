@@ -18,8 +18,8 @@ add_executable(static-server src/main.c
         inc/http/response.h
         inc/http/event.h
         src/http/response.c
-        inc/app/config_reader.h
         src/http/header.c
         src/http/headers.c
-        src/app/config_reader.c
+        lib/fs/fs.c
+        lib/fs/fs.h
 )

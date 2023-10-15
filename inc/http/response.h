@@ -19,7 +19,8 @@ int http_response_set_proto(http_response_t response, const char *proto);
 int http_response_set_status_code(http_response_t response, http_status_code_t status_code);
 int http_response_set_header(http_response_t response, const char *name, const char *value);
 int http_response_set_body(http_response_t response, const char *body);
-int http_response_get_raw(http_response_t response, char **raw_response);
+int http_response_set_attachment(http_response_t response, int fd);
+int http_response_write(http_response_t response, int fd);
 void http_response_destroy(http_response_t *response);
 
 #endif //HTTP_RESPONSE_H
