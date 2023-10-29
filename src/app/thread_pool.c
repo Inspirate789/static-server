@@ -25,24 +25,27 @@ int thread_pool_create(thread_pool_t *pool, size_t capacity) {
         return EXIT_FAILURE;
     }
 
-    if (((*pool) = malloc(sizeof(struct thread_pool))) == NULL) {
+    thread_pool_t tmp_pool = malloc(sizeof(struct thread_pool));
+    if (tmp_pool == NULL) {
         log_error("thread_pool_init malloc() thread_pool: %s", strerror(errno));
         return EXIT_FAILURE;
     }
 
-    (*pool)->size = 0;
-    (*pool)->capacity = capacity;
-    if (((*pool)->tasks = malloc(capacity * sizeof(thread_pool_task_t))) == NULL) { // TODO: tmp
+    tmp_pool->size = 0;
+    tmp_pool->capacity = capacity;
+    if ((tmp_pool->tasks = malloc(capacity * sizeof(thread_pool_task_t))) == NULL) {
         log_error("thread_pool_init malloc() thread_pool_task: %s", strerror(errno));
-        free(*pool);
+        free(tmp_pool);
         return EXIT_FAILURE;
     }
-    if (((*pool)->threads = malloc(capacity * sizeof(pthread_t))) == NULL) {
+    if ((tmp_pool->threads = malloc(capacity * sizeof(pthread_t))) == NULL) {
         log_error("thread_pool_init malloc() pthread_t: %s", strerror(errno));
-        free((*pool)->tasks);
-        free(*pool);
+        free(tmp_pool->tasks);
+        free(tmp_pool);
         return EXIT_FAILURE;
     }
+
+    *pool = tmp_pool;
 
     return EXIT_SUCCESS;
 }

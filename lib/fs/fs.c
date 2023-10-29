@@ -23,16 +23,16 @@ file_type_t detect_file_type(char *path) {
     }
 }
 
-int copy_file(int dst_fd, int src_fd) {
-    char c;
+int copy_file(int src_fd, int dst_fd) {
+    char buf[FILE_COPY_BUFFER_SIZE];
     ssize_t n;
-    while ((n = read(src_fd, &c, 1)) != 0) {
+    while ((n = read(src_fd, buf, FILE_COPY_BUFFER_SIZE)) != 0) {
         if (n == -1) {
-            log_error("copy_file read %d: %s", src_fd, strerror(errno));
+            log_error("copy_file read from fd %d: %s", src_fd, strerror(errno));
             return EXIT_FAILURE;
         }
-        if (write(dst_fd, &c, 1) != 1) {
-            log_error("copy_file write %d: %s", dst_fd, strerror(errno));
+        if (write(dst_fd, buf, FILE_COPY_BUFFER_SIZE) != n) {
+            log_error("copy_file write to fd %d: %s", dst_fd, strerror(errno));
             return EXIT_FAILURE;
         }
     }

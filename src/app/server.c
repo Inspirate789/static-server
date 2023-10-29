@@ -23,25 +23,27 @@ int server_create(server_t *server) {
         return EXIT_FAILURE;
     }
 
-    if (((*server) = malloc(sizeof(struct server))) == NULL) {
+    server_t tmp_server = malloc(sizeof(struct server));
+    if (tmp_server == NULL) {
         log_error("server_init malloc(): %s", strerror(errno));
         return EXIT_FAILURE;
     }
 
-    if (((*server)->server_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    if ((tmp_server->server_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         log_error("socket(): %s", strerror(errno));
         free(*server);
         return EXIT_FAILURE;
     }
 
     int opt = IP_PMTUDISC_WANT;
-    if (setsockopt((*server)->server_socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+    if (setsockopt(tmp_server->server_socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         log_error("setsockopt(): %s", strerror(errno));
-        free(*server);
+        free(tmp_server);
         return EXIT_FAILURE;
     }
 
-    (*server)->is_running = false;
+    tmp_server->is_running = false;
+    *server = tmp_server;
 
     return EXIT_SUCCESS;
 }

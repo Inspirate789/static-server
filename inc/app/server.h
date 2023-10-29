@@ -1,5 +1,5 @@
 #ifndef SERVER_H
-#define SERVER_H // TODO: #ifdef __cplusplus
+#define SERVER_H
 
 typedef struct server *server_t;
 

@@ -24,7 +24,7 @@ static size_t substrings_count(const char *str, const char *substr){
     return count;
 }
 
-static int http_request_parse_lines(const char *raw_request, char ***lines, size_t *n) { // TODO: add const
+static int http_request_parse_lines(const char *raw_request, char ***lines, size_t *n) {
     char *raw = strdup(raw_request);
     if (raw == NULL) {
         log_error("http_request_parse_lines strdup() raw_request: %s", strerror(errno));

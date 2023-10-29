@@ -1,0 +1,3 @@
+/home/inspirate789/Документы/7_sem/Networks_coursework/repo/static-server/cmake-build-debug/CMakeFiles/static-server.dir
+/home/inspirate789/Документы/7_sem/Networks_coursework/repo/static-server/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/inspirate789/Документы/7_sem/Networks_coursework/repo/static-server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
