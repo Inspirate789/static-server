@@ -125,6 +125,7 @@ void signal_handler(int signum)
 }
 
 int main() {
+    // log_set_level(LOG_WARN);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {
         return rc;

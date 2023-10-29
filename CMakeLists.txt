@@ -16,10 +16,11 @@ add_executable(static-server src/main.c
         inc/http/request.h
         src/http/request.c
         inc/http/response.h
-        inc/http/event.h
+        inc/http/events_handler.h
         src/http/response.c
         src/http/header.c
         src/http/headers.c
         lib/fs/fs.c
         lib/fs/fs.h
+        src/http/events_handler.c
 )

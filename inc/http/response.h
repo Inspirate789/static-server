@@ -6,7 +6,6 @@
 typedef const char *http_status_code_t;
 
 http_status_code_t OK                    = "200 OK";
-http_status_code_t BAD_REQUEST           = "400 Bad Request";
 http_status_code_t FORBIDDEN             = "403 Forbidden";
 http_status_code_t NOT_FOUND             = "404 Not Found";
 http_status_code_t METHOD_NOT_ALLOWED    = "405 Method Not Allowed";
