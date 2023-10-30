@@ -7,7 +7,7 @@
 #include "../../lib/log/log.h"
 
 struct http_response {
-    char *proto;
+    http_proto_t proto;
     http_status_code_t status_code;
     http_headers_t headers;
     char *body;
@@ -29,32 +29,26 @@ int http_response_create(http_response_t *response) {
     int rc = http_headers_create(&tmp_response->headers, AVERAGE_HTTP_HEADERS_COUNT);
     if (rc != EXIT_SUCCESS) {
         free(tmp_response);
+        return rc;
     }
 
     tmp_response->attachment_fd = -1;
     *response = tmp_response;
 
-    return rc;
+    return EXIT_SUCCESS;
 }
 
-int http_response_set_proto(http_response_t response, const char *proto) {
+int http_response_set_proto(http_response_t response, http_proto_t proto) {
     if (response == NULL) {
         log_error("response pointer is NULL");
         return EXIT_FAILURE;
     }
     if (proto == NULL) {
-        log_error("proto pointer is NULL");
+        log_error("proto is NULL");
         return EXIT_FAILURE;
     }
 
-    char *tmp_proto = strdup(proto);
-    if (tmp_proto == NULL) {
-        log_error("http_response_set_body strdup() body: %s", strerror(errno));
-        return EXIT_FAILURE;
-    }
-
-    free(response->proto);
-    response->proto = tmp_proto;
+    response->proto = proto;
 
     return EXIT_SUCCESS;
 }
@@ -123,12 +117,12 @@ static int http_response_check(http_response_t response) {
         return EXIT_FAILURE;
     }
     if (response->proto == NULL) {
-        log_error("response proto is not set");
-        return EXIT_FAILURE;
+        log_error("response proto is not set; change to %s", HTTP_1_1);
+        response->proto = HTTP_1_1;
     }
     if (response->status_code == NULL) {
-        log_warn("response status code is not set; change to %s", OK);
-        response->status_code = OK;
+        log_warn("response status code is not set; change to %s", HTTP_OK);
+        response->status_code = HTTP_OK;
     }
 
     return EXIT_SUCCESS;
@@ -242,7 +236,6 @@ void http_response_destroy(http_response_t *response) {
     if (response == NULL || *response == NULL) {
         return;
     }
-    free((*response)->proto);
     http_headers_destroy(&(*response)->headers);
     free((*response)->body);
     free(*response);

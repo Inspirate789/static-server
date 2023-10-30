@@ -23,28 +23,28 @@ int http_header_create(http_header_t *header, const char *name, const char *valu
         return EXIT_FAILURE;
     }
 
-    http_header_t tmp = malloc(sizeof(struct http_header));
-    if (tmp == NULL) {
+    http_header_t tmp_header = malloc(sizeof(struct http_header));
+    if (tmp_header == NULL) {
         log_error("http_header_create malloc() struct http_header: %s", strerror(errno));
         return EXIT_FAILURE;
     }
 
-    tmp->name = strdup(name);
-    if (tmp->name == NULL) {
+    tmp_header->name = strdup(name);
+    if (tmp_header->name == NULL) {
         log_error("http_header_create strdup() name: %s", strerror(errno));
-        free(tmp);
+        free(tmp_header);
         return EXIT_FAILURE;
     }
 
-    tmp->value = strdup(value);
-    if (tmp->value == NULL) {
+    tmp_header->value = strdup(value);
+    if (tmp_header->value == NULL) {
         log_error("http_header_create strdup() value: %s", strerror(errno));
-        free(tmp->name);
-        free(tmp);
+        free(tmp_header->name);
+        free(tmp_header);
         return EXIT_FAILURE;
     }
 
-    *header = tmp;
+    *header = tmp_header;
 
     return EXIT_SUCCESS;
 }
