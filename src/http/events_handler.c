@@ -66,7 +66,8 @@ int handle_http_event(http_events_handler_t handler, int socket_fd) {
     }
 
     http_response_t response = NULL;
-    rc = make_decision(handler->decisions_maker, request, &response);
+    http_status_code_t status_code = NULL;
+    rc = make_decision(handler->decisions_maker, request, &response, &status_code);
     if (rc != EXIT_SUCCESS) {
         http_request_destroy(&request);
         return rc;
@@ -79,7 +80,7 @@ int handle_http_event(http_events_handler_t handler, int socket_fd) {
         return rc;
     }
 
-    rc = log_http_response(request, HTTP_OK);
+    rc = log_http_response(request, status_code);
     http_request_destroy(&request);
 
     return rc;
