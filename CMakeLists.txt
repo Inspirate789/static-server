@@ -23,4 +23,6 @@ add_executable(static-server src/main.c
         lib/fs/fs.c
         lib/fs/fs.h
         src/http/events_handler.c
+        inc/http/decisions_maker.h
+        src/http/decisions_maker.c
 )
