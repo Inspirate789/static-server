@@ -60,21 +60,9 @@ static void http_request_free_lines(char **lines, size_t n) {
     free(lines);
 }
 
-static int http_request_parse_method(const char *method) {
-    const char *http_methods[] = {
-    "GET",
-    "HEAD",
-    "POST",
-    "PUT",
-    "DELETE",
-    "CONNECT",
-    "OPTIONS",
-    "TRACE",
-    "PATCH",
-    };
-
+static http_method_t http_request_parse_method(const char *method) {
     for (int i = GET; i < PATCH; i++) {
-        if (strcmp(method, http_methods[i]) == 0) {
+        if (strcmp(method, http_method_mapping(i)) == 0) {
             return i;
         }
     }
