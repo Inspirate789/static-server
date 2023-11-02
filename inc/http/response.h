@@ -10,7 +10,6 @@
 #define HTTP_METHOD_NOT_ALLOWED    "405 Method Not Allowed"
 #define HTTP_INTERNAL_SERVER_ERROR "500 Internal Server Error"
 
-#define HTTP_1_0 "HTTP/1.0"
 #define HTTP_1_1 "HTTP/1.1"
 
 typedef char *http_status_code_t;

@@ -148,6 +148,7 @@ static int http_request_parse_headers_and_body(http_request_t request, char **li
             return errno;
         }
     } else {
+        request->body = NULL;
         if ((rc = http_headers_create_header(request->headers, lines[n - 1])) != EXIT_SUCCESS) {
             return rc;
         }

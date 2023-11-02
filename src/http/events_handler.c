@@ -4,6 +4,7 @@
 #include <errno.h>
 #include "../../inc/http/events_handler.h"
 #include "../../inc/http/decisions_maker.h"
+#include "../../inc/http/request.h"
 #include "../../lib/log/log.h"
 
 struct http_events_handler {
@@ -35,13 +36,13 @@ int http_events_handler_create(http_events_handler_t *handler) {
     return EXIT_SUCCESS;
 }
 
-static int read_http_request(int socket_fd, char **raw_request) {
-    ssize_t n = read(socket_fd, *raw_request, REQUEST_BUFFER_SIZE - 1);
+static int read_http_request(int socket_fd, char *raw_request) {
+    ssize_t n = read(socket_fd, raw_request, REQUEST_BUFFER_SIZE - 1);
     if (n < 0) {
         log_error("read() from fd %d: %s", socket_fd, strerror(errno));
         return errno;
     }
-    *raw_request[n] = '\0';
+    raw_request[n] = '\0';
 
     return EXIT_SUCCESS;
 }
@@ -63,7 +64,7 @@ static int log_http_request(http_request_t request) {
         return rc;
     }
 
-    log_info("REQ %s %s by %s", method, path, proto);
+    log_debug("REQ %s %s by %s", http_method_mapping(method), path, proto);
 
     return EXIT_SUCCESS;
 }
@@ -92,11 +93,11 @@ static int log_http_response(http_request_t request, http_status_code_t status_c
 
     if (strcmp(status_code, HTTP_OK) == 0) {
         log_info("\033[0;32m%c%c%c %s %s by %s --- %d ms\033[0m",
-            status_code[0], status_code[1], status_code[2], method, path, proto, processing_time
+            status_code[0], status_code[1], status_code[2], http_method_mapping(method), path, proto, processing_time
         );
     } else {
         log_info("\033[0;31m%c%c%c %s %s by %s --- %d ms\033[0m",
-                 status_code[0], status_code[1], status_code[2], method, path, proto, processing_time
+                 status_code[0], status_code[1], status_code[2], http_method_mapping(method), path, proto, processing_time
         );
     }
 
@@ -106,7 +107,7 @@ static int log_http_response(http_request_t request, http_status_code_t status_c
 int handle_http_event(http_events_handler_t handler, int socket_fd) {
     // log_info("process request from client (fd = %d) ...", socket_fd);
     char raw_request[REQUEST_BUFFER_SIZE] = {'\0'};
-    int rc = read_http_request(socket_fd, (char **)&raw_request);
+    int rc = read_http_request(socket_fd, raw_request);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }

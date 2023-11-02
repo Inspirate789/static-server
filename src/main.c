@@ -8,6 +8,7 @@
 
 #include "../inc/app/server.h"
 #include "../inc/app/thread_pool.h"
+#include "../inc/http/events_handler.h"
 #include "../lib/log/log.h"
 
 #define PORT 8080
@@ -18,46 +19,47 @@
 
 static server_t server = NULL;
 static thread_pool_t thread_pool = NULL;
+static http_events_handler_t events_handler = NULL;
 
-char** tokenize_string(const char* str, const char* delimiter, int* num_tokens) {
-    char* temp_str = strdup(str);
-    char** tokens = (char**)malloc(strlen(temp_str) * sizeof(char*));
-    char* token = strtok(temp_str, delimiter);
-    int token_count = 0;
-
-    while (token != NULL) {
-        tokens[token_count] = strdup(token);
-        token = strtok(NULL, delimiter);
-        token_count++;
-    }
-
-    free(temp_str);
-    *num_tokens = token_count;
-
-    return tokens;
-}
-
-void handle_http_request(int socket_fd) {
-    char request[REQUEST_BUFFER_SIZE];
-    memset(request, 0, REQUEST_BUFFER_SIZE);
-    log_info("process request from client (fd = %d) ...", socket_fd);
-    ssize_t n = read(socket_fd, request, REQUEST_BUFFER_SIZE - 1);
-    if (n < 0) {
-        log_error("read(): %s", strerror(errno));
-        return;
-    }
-    request[n] = '\0';
-
-    int num_tokens;
-    char** tokens = tokenize_string(request, "\r\n", &num_tokens);
-    for (int i = 0; i < num_tokens; i++) {
-        log_debug("token %d (len %lu): %s", i, strlen(tokens[i]), tokens[i]);
-    }
-
-    char *response = "HTTP/1.1 200 OK\nContent-Type: text/plain\n\nHello, world!";
-    send(socket_fd, response, strlen(response), 0);
-    log_info("reply for client (fd = %d) sent", socket_fd);
-}
+//char** tokenize_string(const char* str, const char* delimiter, int* num_tokens) {
+//    char* temp_str = strdup(str);
+//    char** tokens = (char**)malloc(strlen(temp_str) * sizeof(char*));
+//    char* token = strtok(temp_str, delimiter);
+//    int token_count = 0;
+//
+//    while (token != NULL) {
+//        tokens[token_count] = strdup(token);
+//        token = strtok(NULL, delimiter);
+//        token_count++;
+//    }
+//
+//    free(temp_str);
+//    *num_tokens = token_count;
+//
+//    return tokens;
+//}
+//
+//void handle_http_request(int socket_fd) {
+//    char request[REQUEST_BUFFER_SIZE];
+//    memset(request, 0, REQUEST_BUFFER_SIZE);
+//    log_info("process request from client (fd = %d) ...", socket_fd);
+//    ssize_t n = read(socket_fd, request, REQUEST_BUFFER_SIZE - 1);
+//    if (n < 0) {
+//        log_error("read(): %s", strerror(errno));
+//        return;
+//    }
+//    request[n] = '\0';
+//
+//    int num_tokens;
+//    char** tokens = tokenize_string(request, "\r\n", &num_tokens);
+//    for (int i = 0; i < num_tokens; i++) {
+//        log_debug("token %d (len %lu): %s", i, strlen(tokens[i]), tokens[i]);
+//    }
+//
+//    char *response = "HTTP/1.1 200 OK\nContent-Type: text/plain\n\nHello, world!";
+//    send(socket_fd, response, strlen(response), 0);
+//    log_info("reply for client (fd = %d) sent", socket_fd);
+//}
 
 typedef struct task {
     int socket_fd;
@@ -74,7 +76,7 @@ void *worker_thread(void *arg) {
         }
         int client_socket = ((task_t *)task)->socket_fd;
 
-        handle_http_request(client_socket);
+        handle_http_event(events_handler, client_socket);
 
         close(client_socket);
         ((task_t *)task)->socket_fd = -1;
@@ -103,6 +105,7 @@ void server_shutdown(server_t s)
     server_destroy(&s);
 
     thread_pool_destroy(&thread_pool);
+    http_events_handler_destroy(&events_handler);
 
     log_info("server stopped");
     exit(EXIT_SUCCESS);
@@ -125,7 +128,7 @@ void signal_handler(int signum)
 }
 
 int main() {
-    // log_set_level(LOG_WARN);
+    log_set_level(LOG_INFO);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {
         return rc;
@@ -133,6 +136,10 @@ int main() {
     if ((rc = thread_pool_create(&thread_pool, THREAD_POOL_SIZE)) != 0) {
         return rc;
     }
+    if ((rc = http_events_handler_create(&events_handler)) != 0) {
+        return rc;
+    }
+
     if ((rc = thread_pool_start(thread_pool, worker_thread)) != EXIT_SUCCESS) {
         return rc;
     }

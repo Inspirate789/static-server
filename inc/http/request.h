@@ -17,6 +17,21 @@ typedef enum http_method {
     PATCH,      // The PATCH method applies partial modifications to a resource.
 } http_method_t;
 
+static inline char *http_method_mapping(http_method_t method) {
+    char *mapping[9] = {
+        "GET",
+        "HEAD",
+        "POST",
+        "PUT",
+        "DELETE",
+        "CONNECT",
+        "OPTIONS",
+        "TRACE",
+        "PATCH",
+    };
+    return mapping[method];
+}
+
 typedef char *http_proto_t;
 
 typedef struct http_request *http_request_t;
