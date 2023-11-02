@@ -15,10 +15,10 @@ struct http_response {
 };
 
 int http_response_create(http_response_t *response) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     http_response_t tmp_response = calloc(1, sizeof(struct http_response));
     if (tmp_response == NULL) {
@@ -39,14 +39,14 @@ int http_response_create(http_response_t *response) {
 }
 
 int http_response_set_proto(http_response_t response, http_proto_t proto) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
-    if (proto == NULL) {
-        log_error("proto is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (proto == NULL) {
+//        log_error("proto is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     response->proto = proto;
 
@@ -54,14 +54,14 @@ int http_response_set_proto(http_response_t response, http_proto_t proto) {
 }
 
 int http_response_set_status_code(http_response_t response, http_status_code_t status_code) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
-    if (status_code == NULL) {
-        log_error("status_code is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (status_code == NULL) {
+//        log_error("status_code is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     response->status_code = status_code;
 
@@ -69,23 +69,23 @@ int http_response_set_status_code(http_response_t response, http_status_code_t s
 }
 
 int http_response_set_header(http_response_t response, const char *name, const char *value) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     return http_headers_set_header(response->headers, name, value);
 }
 
 int http_response_set_body(http_response_t response, const char *body) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
-    if (body == NULL) {
-        log_error("body pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (body == NULL) {
+//        log_error("body pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     char *tmp_body = strdup(body);
     if (tmp_body == NULL) {
@@ -100,10 +100,10 @@ int http_response_set_body(http_response_t response, const char *body) {
 }
 
 int http_response_set_attachment(http_response_t response, int fd) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     free(response->body);
     response->attachment_fd = fd;
@@ -112,10 +112,10 @@ int http_response_set_attachment(http_response_t response, int fd) {
 }
 
 static int http_response_check(http_response_t response) {
-    if (response == NULL) {
-        log_error("response pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
     if (response->proto == NULL) {
         log_error("response proto is not set; change to %s", HTTP_1_1);
         response->proto = HTTP_1_1;

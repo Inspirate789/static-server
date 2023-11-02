@@ -12,10 +12,10 @@ struct http_events_handler {
 };
 
 int http_events_handler_create(http_events_handler_t *handler) {
-    if (handler == NULL) {
-        log_error("handler pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (handler == NULL) {
+//        log_error("handler pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     http_events_handler_t tmp_handler = malloc(sizeof(struct http_events_handler));
     if (tmp_handler == NULL) {

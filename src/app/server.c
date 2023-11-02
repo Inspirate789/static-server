@@ -15,13 +15,13 @@ struct server {
 };
 
 int server_create(server_t *server) {
-    if (server == NULL) {
-        log_error("server pointer is NULL");
-        return EXIT_FAILURE;
-    } else if (*server != NULL) {
-        log_warn("server is already initialized");
-        return EXIT_FAILURE;
-    }
+//    if (server == NULL) {
+//        log_error("server pointer is NULL");
+//        return EXIT_FAILURE;
+//    } else if (*server != NULL) {
+//        log_warn("server is already initialized");
+//        return EXIT_FAILURE;
+//    }
 
     server_t tmp_server = malloc(sizeof(struct server));
     if (tmp_server == NULL) {
@@ -49,10 +49,10 @@ int server_create(server_t *server) {
 }
 
 int server_run(server_t server, int port, int conn_queue_len, void(*handle_request)(int)) {
-    if (server == NULL) {
-        log_error("server pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (server == NULL) {
+//        log_error("server pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;

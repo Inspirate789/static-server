@@ -8,10 +8,10 @@ struct decisions_maker {
 };
 
 int decisions_maker_create(decisions_maker_t *maker) {
-    if (maker == NULL) {
-        log_error("maker pointer is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (maker == NULL) {
+//        log_error("maker pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     decisions_maker_t tmp_handler = malloc(sizeof(struct decisions_maker));
     if (tmp_handler == NULL) {
@@ -127,22 +127,22 @@ static int setup_fail_template(http_response_t *response, http_proto_t proto) {
 }
 
 int make_decision(decisions_maker_t maker, http_request_t request, http_response_t *response, http_status_code_t *status_code) { // TODO
-    if (maker == NULL) {
-        log_error("maker is NULL");
-        return EXIT_FAILURE;
-    }
-    if (request == NULL) {
-        log_error("request is NULL");
-        return EXIT_FAILURE;
-    }
-    if (response == NULL) {
-        log_error("response is NULL");
-        return EXIT_FAILURE;
-    }
-    if (status_code == NULL) {
-        log_error("status_code is NULL");
-        return EXIT_FAILURE;
-    }
+//    if (maker == NULL) {
+//        log_error("maker is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (request == NULL) {
+//        log_error("request is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (response == NULL) {
+//        log_error("response is NULL");
+//        return EXIT_FAILURE;
+//    }
+//    if (status_code == NULL) {
+//        log_error("status_code is NULL");
+//        return EXIT_FAILURE;
+//    }
 
     char *proto = NULL;
     int rc = http_request_get_proto(request, &proto);
