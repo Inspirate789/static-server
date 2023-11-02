@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 #include "../../inc/http/events_handler.h"
@@ -35,20 +36,68 @@ int http_events_handler_create(http_events_handler_t *handler) {
 }
 
 static int read_http_request(int socket_fd, char **raw_request) {
-    // TODO
+    ssize_t n = read(socket_fd, *raw_request, REQUEST_BUFFER_SIZE - 1);
+    if (n < 0) {
+        log_error("read() from fd %d: %s", socket_fd, strerror(errno));
+        return EXIT_FAILURE;
+    }
+    *raw_request[n] = '\0';
+
+    return EXIT_SUCCESS;
 }
 
 static int log_http_request(http_request_t request) {
-    // TODO
+    char *path = NULL;
+    int rc = http_request_get_path(request, &path);
+    if (rc != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    http_method_t method;
+    if ((rc = http_request_get_method(request, &method)) != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    http_proto_t proto = NULL;
+    if ((rc = http_request_get_proto(request, &proto)) != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    log_info("REQ %s %s by %s", method, path, proto);
+
+    return EXIT_SUCCESS;
 }
 
 static int log_http_response(http_request_t request, http_status_code_t status_code) {
-    // TODO
+    char *path = NULL;
+    int rc = http_request_get_path(request, &path);
+    if (rc != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    http_method_t method;
+    if ((rc = http_request_get_method(request, &method)) != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    http_proto_t proto = NULL;
+    if ((rc = http_request_get_proto(request, &proto)) != EXIT_SUCCESS) {
+        return rc;
+    }
+
+    if (status_code == HTTP_OK) {
+        log_info("\033[0;32m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
+    } else {
+        log_info("\033[0;31m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
+    }
+
+    return EXIT_SUCCESS;
 }
 
 int handle_http_event(http_events_handler_t handler, int socket_fd) {
-    char *raw_request = NULL;
-    int rc = read_http_request(socket_fd, &raw_request);
+    // log_info("process request from client (fd = %d) ...", socket_fd);
+    char raw_request[REQUEST_BUFFER_SIZE] = {'\0'};
+    int rc = read_http_request(socket_fd, (char **)&raw_request);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }

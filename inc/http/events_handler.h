@@ -1,6 +1,8 @@
 #ifndef HTTP_EVENTS_HANDLER_H
 #define HTTP_EVENTS_HANDLER_H
 
+#define REQUEST_BUFFER_SIZE 1024
+
 typedef struct http_events_handler *http_events_handler_t;
 
 int http_events_handler_create(http_events_handler_t *handler);

@@ -8,7 +8,8 @@
 
 struct http_request {
     http_method_t method;
-    char *path, *proto;
+    char *path;
+    http_proto_t proto;
     http_headers_t headers;
     char *body;
     clock_t start_time;

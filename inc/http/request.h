@@ -17,6 +17,9 @@ typedef enum http_method {
     PATCH,      // The PATCH method applies partial modifications to a resource.
 } http_method_t;
 
+typedef char *http_proto_t;
+http_proto_t HTTP_1_1 = "HTTP/1.1";
+
 typedef struct http_request *http_request_t;
 
 int http_request_create(http_request_t *request, const char *raw_request);
