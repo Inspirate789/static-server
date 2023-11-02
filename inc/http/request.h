@@ -3,7 +3,7 @@
 
 #include <time.h>
 
-#define INVALID_HTTP_REQUEST -2
+#define INVALID_HTTP_REQUEST (-2)
 
 typedef enum http_method {
     GET,        // The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
@@ -18,7 +18,6 @@ typedef enum http_method {
 } http_method_t;
 
 typedef char *http_proto_t;
-http_proto_t HTTP_1_1 = "HTTP/1.1";
 
 typedef struct http_request *http_request_t;
 

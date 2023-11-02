@@ -6,11 +6,13 @@
 
 typedef const char *http_status_code_t;
 
-http_status_code_t HTTP_OK                    = "200 OK";
-http_status_code_t HTTP_FORBIDDEN             = "403 Forbidden";
-http_status_code_t HTTP_NOT_FOUND             = "404 Not Found";
-http_status_code_t HTTP_METHOD_NOT_ALLOWED    = "405 Method Not Allowed";
-http_status_code_t HTTP_INTERNAL_SERVER_ERROR = "500 Internal Server Error";
+#define HTTP_OK                    "200 OK"
+#define HTTP_FORBIDDEN             "403 Forbidden"
+#define HTTP_NOT_FOUND             "404 Not Found"
+#define HTTP_METHOD_NOT_ALLOWED    "405 Method Not Allowed"
+#define HTTP_INTERNAL_SERVER_ERROR "500 Internal Server Error"
+
+#define HTTP_1_1 "HTTP/1.1"
 
 typedef struct http_response *http_response_t;
 

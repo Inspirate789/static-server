@@ -21,14 +21,14 @@ int http_events_handler_create(http_events_handler_t *handler) {
         log_error("http_events_handler_create malloc() struct http_events_handler: %s", strerror(errno));
         return errno;
     }
-    
+
     decisions_maker_t tmp_decisions_maker = NULL;
     int rc = decisions_maker_create(&tmp_decisions_maker);
     if (rc != EXIT_SUCCESS) {
         free(tmp_handler);
         return rc;
     }
-    
+
     tmp_handler->decisions_maker = tmp_decisions_maker;
     *handler = tmp_handler;
 

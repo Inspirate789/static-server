@@ -6,7 +6,7 @@
 
 #define AVERAGE_HTTP_HEADERS_COUNT 12
 
-#define HTTP_HEADER_NOT_FOUND -1
+#define HTTP_HEADER_NOT_FOUND (-1)
 
 typedef struct http_headers *http_headers_t;
 

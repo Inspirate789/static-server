@@ -143,13 +143,13 @@ int make_decision(decisions_maker_t maker, http_request_t request, http_response
         log_error("status_code is NULL");
         return EXIT_FAILURE;
     }
-    
+
     char *proto = NULL;
     int rc = http_request_get_proto(request, &proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
-    
+
     if (strcmp(proto, HTTP_1_1) != 0) {
         log_error("response is NULL");
         return INCORRECT_HTTP_PROTO;
@@ -160,7 +160,7 @@ int make_decision(decisions_maker_t maker, http_request_t request, http_response
         return rc;
     }
     *status_code = HTTP_OK;
-    
+
     return EXIT_SUCCESS;
 }
 
