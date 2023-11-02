@@ -24,14 +24,14 @@ int decisions_maker_create(decisions_maker_t *maker) {
     return EXIT_SUCCESS;
 }
 
-static int setup_http_response_template(http_response_t *response) {
+static int setup_http_response_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
     int rc = http_response_create(&tmp_response);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
 
-    if ((rc = http_response_set_proto(tmp_response, HTTP_1_1)) != EXIT_SUCCESS) {
+    if ((rc = http_response_set_proto(tmp_response, proto)) != EXIT_SUCCESS) {
         http_response_destroy(&tmp_response);
         return rc;
     }
@@ -41,9 +41,9 @@ static int setup_http_response_template(http_response_t *response) {
     return EXIT_SUCCESS;
 }
 
-static int setup_success_template(http_response_t *response) {
+static int setup_success_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
-    int rc = setup_http_response_template(&tmp_response);
+    int rc = setup_http_response_template(&tmp_response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
@@ -58,9 +58,9 @@ static int setup_success_template(http_response_t *response) {
     return EXIT_SUCCESS;
 }
 
-static int setup_forbidden_template(http_response_t *response) {
+static int setup_forbidden_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
-    int rc = setup_http_response_template(&tmp_response);
+    int rc = setup_http_response_template(&tmp_response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
@@ -75,9 +75,9 @@ static int setup_forbidden_template(http_response_t *response) {
     return EXIT_SUCCESS;
 }
 
-static int setup_not_found_template(http_response_t *response) {
+static int setup_not_found_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
-    int rc = setup_http_response_template(&tmp_response);
+    int rc = setup_http_response_template(&tmp_response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
@@ -92,9 +92,9 @@ static int setup_not_found_template(http_response_t *response) {
     return EXIT_SUCCESS;
 }
 
-static int setup_not_allowed_template(http_response_t *response) {
+static int setup_not_allowed_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
-    int rc = setup_http_response_template(&tmp_response);
+    int rc = setup_http_response_template(&tmp_response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
@@ -109,9 +109,9 @@ static int setup_not_allowed_template(http_response_t *response) {
     return EXIT_SUCCESS;
 }
 
-static int setup_fail_template(decisions_maker_t maker, http_response_t *response) {
+static int setup_fail_template(http_response_t *response, http_proto_t proto) {
     http_response_t tmp_response = NULL;
-    int rc = setup_http_response_template(&tmp_response);
+    int rc = setup_http_response_template(&tmp_response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }
@@ -150,12 +150,7 @@ int make_decision(decisions_maker_t maker, http_request_t request, http_response
         return rc;
     }
 
-    if (strcmp(proto, HTTP_1_1) != 0) {
-        log_error("response is NULL");
-        return INCORRECT_HTTP_PROTO;
-    }
-
-    rc = setup_success_template(response);
+    rc = setup_success_template(response, proto);
     if (rc != EXIT_SUCCESS) {
         return rc;
     }

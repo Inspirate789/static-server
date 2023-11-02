@@ -4,8 +4,6 @@
 #include "../../inc/http/request.h"
 #include "../../inc/http/response.h"
 
-#define INCORRECT_HTTP_PROTO (-3)
-
 typedef struct decisions_maker *decisions_maker_t;
 
 int decisions_maker_create(decisions_maker_t *maker);

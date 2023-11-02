@@ -4,15 +4,16 @@
 #include "header.h"
 #include "request.h"
 
-typedef const char *http_status_code_t;
-
 #define HTTP_OK                    "200 OK"
 #define HTTP_FORBIDDEN             "403 Forbidden"
 #define HTTP_NOT_FOUND             "404 Not Found"
 #define HTTP_METHOD_NOT_ALLOWED    "405 Method Not Allowed"
 #define HTTP_INTERNAL_SERVER_ERROR "500 Internal Server Error"
 
+#define HTTP_1_0 "HTTP/1.0"
 #define HTTP_1_1 "HTTP/1.1"
+
+typedef char *http_status_code_t;
 
 typedef struct http_response *http_response_t;
 

@@ -85,7 +85,7 @@ static int log_http_response(http_request_t request, http_status_code_t status_c
         return rc;
     }
 
-    if (status_code == HTTP_OK) {
+    if (strcmp(status_code, HTTP_OK) == 0) {
         log_info("\033[0;32m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
     } else {
         log_info("\033[0;31m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
