@@ -29,11 +29,11 @@ int copy_file(int src_fd, int dst_fd) {
     while ((n = read(src_fd, buf, FILE_COPY_BUFFER_SIZE)) != 0) {
         if (n == -1) {
             log_error("copy_file read from fd %d: %s", src_fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
         if (write(dst_fd, buf, FILE_COPY_BUFFER_SIZE) != n) {
             log_error("copy_file write to fd %d: %s", dst_fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
     }
 

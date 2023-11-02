@@ -26,7 +26,7 @@ int http_header_create(http_header_t *header, const char *name, const char *valu
     http_header_t tmp_header = malloc(sizeof(struct http_header));
     if (tmp_header == NULL) {
         log_error("http_header_create malloc() struct http_header: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     tmp_header->name = strdup(name);
@@ -62,7 +62,7 @@ int http_header_create_from_raw(http_header_t *header, const char *raw_header) {
     char *raw = strdup(raw_header);
     if (raw == NULL) {
         log_error("http_header_create_from_raw strdup() raw_header: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     char *value = strstr(raw, ": ") + 2;
@@ -97,7 +97,7 @@ int http_header_set_name(http_header_t header, const char *name) {
     char *tmp = strdup(name);
     if (header->name == NULL) {
         log_error("http_header_set_name strdup(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     free(header->name);
     header->name = tmp;
@@ -133,7 +133,7 @@ int http_header_set_value(http_header_t header, const char *value) {
     char *tmp = strdup(value);
     if (header->name == NULL) {
         log_error("http_header_set_value strdup(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     free(header->value);
     header->value = tmp;
@@ -169,7 +169,7 @@ int http_header_make_raw(http_header_t header, char **raw_header) {
     char *raw = malloc(strlen(header->name) + strlen(header->value) + 2);
     if (raw == NULL) {
         log_error("http_header_make_raw malloc(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     strncpy(raw, header->name, strlen(header->name));

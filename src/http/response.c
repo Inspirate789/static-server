@@ -23,7 +23,7 @@ int http_response_create(http_response_t *response) {
     http_response_t tmp_response = calloc(1, sizeof(struct http_response));
     if (tmp_response == NULL) {
         log_error("http_response_create malloc() response: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     int rc = http_headers_create(&tmp_response->headers, AVERAGE_HTTP_HEADERS_COUNT);
@@ -90,7 +90,7 @@ int http_response_set_body(http_response_t response, const char *body) {
     char *tmp_body = strdup(body);
     if (tmp_body == NULL) {
         log_error("http_response_set_body strdup() body: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     free(response->body);
@@ -131,22 +131,22 @@ static int http_response_check(http_response_t response) {
 static int http_response_write_status_line(http_response_t response, int fd) {
     if (write(fd, response->proto, strlen(response->proto)) != strlen(response->proto)) {
         log_error("http_response_write write proto %s to fd %d: %s", response->proto, fd, strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     if (write(fd, " ", 1) != 1) {
         log_error("http_response_write write space to fd %d: %s", fd, strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     if (write(fd, response->status_code, strlen(response->status_code)) != strlen(response->status_code)) {
         log_error("http_response_write write status_code %s to fd %d: %s", response->status_code, fd, strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     if (write(fd, "\r\n", 2) != 2) {
         log_error("http_response_write write \\r\\n to fd %d: %s", fd, strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     return EXIT_SUCCESS;
@@ -174,13 +174,12 @@ static int http_response_write_headers(http_headers_t headers, int fd) {
         http_header_destroy_raw(&raw_header);
         if (n != strlen(raw_header)) {
             log_error("http_response_write write header %s to fd %d: %s", raw_header, fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
-
 
         if (write(fd, "\r\n", 2) != 2) {
             log_error("http_response_write write \\r\\n to fd %d: %s", fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
     }
 
@@ -191,7 +190,7 @@ static int http_response_write_body(http_response_t response, int fd) {
     if (response->body != NULL || response->attachment_fd != -1) {
         if (write(fd, "\r\n\r\n", 4) != 4) {
             log_error("http_response_write write \\r\\n\\r\\n to fd %d: %s", fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
     } else {
         return EXIT_SUCCESS;
@@ -200,7 +199,7 @@ static int http_response_write_body(http_response_t response, int fd) {
     if (response->body != NULL) {
         if (write(fd, response->body, strlen(response->body)) != strlen(response->body)) {
             log_error("http_response_write write body to fd %d: %s", fd, strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
         return EXIT_SUCCESS;
     }

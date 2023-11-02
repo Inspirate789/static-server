@@ -16,7 +16,7 @@ int decisions_maker_create(decisions_maker_t *maker) {
     decisions_maker_t tmp_handler = malloc(sizeof(struct decisions_maker));
     if (tmp_handler == NULL) {
         log_error("decisions_maker_create malloc() struct decisions_maker: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     *maker = tmp_handler;

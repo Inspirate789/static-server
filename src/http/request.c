@@ -29,14 +29,14 @@ static int http_request_parse_lines(const char *raw_request, char ***lines, size
     char *raw = strdup(raw_request);
     if (raw == NULL) {
         log_error("http_request_parse_lines strdup() raw_request: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     size_t max_lines_count = substrings_count(raw, "\r\n") + 1;
     char **tokens = malloc(max_lines_count * sizeof(char*));
     if (tokens == NULL) {
         log_error("http_request_parse_lines malloc() lines: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     char *token = strtok(raw, "\r\n");
     size_t tokens_count = 0;
@@ -107,7 +107,7 @@ static int http_request_parse_first_line(http_request_t request, char *line) {
     *end = ' ';
     if (request->path == NULL) {
         log_error("http_request_parse_first_line strdup() path: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     start = end + 1;
@@ -145,7 +145,7 @@ static int http_request_parse_headers_and_body(http_request_t request, char **li
         request->body = strdup(lines[n - 1]);
         if (request->body == NULL) {
             log_error("http_request_create strdup() body: %s", strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
     } else {
         if ((rc = http_headers_create_header(request->headers, lines[n - 1])) != EXIT_SUCCESS) {

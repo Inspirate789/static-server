@@ -19,7 +19,7 @@ int http_events_handler_create(http_events_handler_t *handler) {
     http_events_handler_t tmp_handler = malloc(sizeof(struct http_events_handler));
     if (tmp_handler == NULL) {
         log_error("http_events_handler_create malloc() struct http_events_handler: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     
     decisions_maker_t tmp_decisions_maker = NULL;
@@ -39,7 +39,7 @@ static int read_http_request(int socket_fd, char **raw_request) {
     ssize_t n = read(socket_fd, *raw_request, REQUEST_BUFFER_SIZE - 1);
     if (n < 0) {
         log_error("read() from fd %d: %s", socket_fd, strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     *raw_request[n] = '\0';
 

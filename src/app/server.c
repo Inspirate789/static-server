@@ -26,7 +26,7 @@ int server_create(server_t *server) {
     server_t tmp_server = malloc(sizeof(struct server));
     if (tmp_server == NULL) {
         log_error("server_init malloc(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     if ((tmp_server->server_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -60,12 +60,12 @@ int server_run(server_t server, int port, int conn_queue_len, void(*handle_reque
 
     if (bind(server->server_socket_fd, (struct sockaddr*)&address, sizeof(address)) == -1) {
         log_error("bind(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     if (listen(server->server_socket_fd, conn_queue_len) == -1) {
         log_error("listen(): %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     log_info("server started on port %d; wait for connections...", port);
@@ -78,14 +78,14 @@ int server_run(server_t server, int port, int conn_queue_len, void(*handle_reque
 
         if (select(server->server_socket_fd + 1, &client_fds, NULL, NULL, NULL) == -1) {
             log_error("select(): %s", strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
 
         int client_socket_fd = -1;
         if (FD_ISSET(server->server_socket_fd, &client_fds)) {
             if ((client_socket_fd = accept(server->server_socket_fd, (struct sockaddr*)NULL, NULL)) == -1) {
                 log_error("accept(): %s", strerror(errno));
-                return EXIT_FAILURE;
+                return errno;
             }
 
             handle_request(client_socket_fd);

@@ -21,7 +21,7 @@ int http_headers_create(http_headers_t *headers, const size_t capacity) {
     http_header_t *tmp_headers = malloc(capacity * sizeof(http_header_t));
     if (tmp_headers == NULL) {
         log_error("http_headers_create malloc() headers: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     http_headers_t tmp = malloc(sizeof(struct http_headers));
@@ -43,7 +43,7 @@ static int http_headers_set_capacity(http_headers_t headers, const size_t capaci
     http_header_t *tmp = realloc(headers->headers, capacity);
     if (tmp == NULL) {
         log_error("http_headers_set_capacity realloc() headers: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
     headers->headers = tmp;
 

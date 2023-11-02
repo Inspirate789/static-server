@@ -28,7 +28,7 @@ int thread_pool_create(thread_pool_t *pool, size_t capacity) {
     thread_pool_t tmp_pool = malloc(sizeof(struct thread_pool));
     if (tmp_pool == NULL) {
         log_error("thread_pool_init malloc() thread_pool: %s", strerror(errno));
-        return EXIT_FAILURE;
+        return errno;
     }
 
     tmp_pool->size = 0;
@@ -59,7 +59,7 @@ int thread_pool_start(thread_pool_t pool, void *(*worker_thread)(void *)) {
     for (int i = 0; i < pool->capacity; i++) {
         if (pthread_create(&pool->threads[i], NULL, worker_thread, pool) != 0) {
             log_error("pthread_create(): %s", strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
     }
 
@@ -126,7 +126,7 @@ int thread_pool_stop(thread_pool_t pool) {
         log_debug("wait for thread %d...", i);
         if (pthread_join(pool->threads[i], (void **)&rc) != 0) {
             log_error("pthread_join(): %s", strerror(errno));
-            return EXIT_FAILURE;
+            return errno;
         }
         if (rc != EXIT_SUCCESS) {
             log_warn("error: thread from pool exited with code %d", rc);
