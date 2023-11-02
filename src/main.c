@@ -14,7 +14,7 @@
 #define REQUEST_BUFFER_SIZE 1024
 #define THREAD_POOL_SIZE 7
 #define CONN_QUEUE_LEN 1024
-//#define LOG_USE_COLOR // TODO
+#define LOG_USE_COLOR // TODO
 
 static server_t server = NULL;
 static thread_pool_t thread_pool = NULL;

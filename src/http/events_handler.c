@@ -85,10 +85,19 @@ static int log_http_response(http_request_t request, http_status_code_t status_c
         return rc;
     }
 
+    clock_t processing_time;
+    if ((rc = http_request_compute_processing_time_ms(request, &processing_time)) != EXIT_SUCCESS) {
+        return rc;
+    }
+
     if (strcmp(status_code, HTTP_OK) == 0) {
-        log_info("\033[0;32m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
+        log_info("\033[0;32m%c%c%c %s %s by %s --- %d ms\033[0m",
+            status_code[0], status_code[1], status_code[2], method, path, proto, processing_time
+        );
     } else {
-        log_info("\033[0;31m%c%c%c %s %s by %s\033[0m", status_code[0], status_code[1], status_code[2], method, path, proto);
+        log_info("\033[0;31m%c%c%c %s %s by %s --- %d ms\033[0m",
+                 status_code[0], status_code[1], status_code[2], method, path, proto, processing_time
+        );
     }
 
     return EXIT_SUCCESS;
