@@ -21,46 +21,6 @@ static server_t server = NULL;
 static thread_pool_t thread_pool = NULL;
 static http_events_handler_t events_handler = NULL;
 
-//char** tokenize_string(const char* str, const char* delimiter, int* num_tokens) {
-//    char* temp_str = strdup(str);
-//    char** tokens = (char**)malloc(strlen(temp_str) * sizeof(char*));
-//    char* token = strtok(temp_str, delimiter);
-//    int token_count = 0;
-//
-//    while (token != NULL) {
-//        tokens[token_count] = strdup(token);
-//        token = strtok(NULL, delimiter);
-//        token_count++;
-//    }
-//
-//    free(temp_str);
-//    *num_tokens = token_count;
-//
-//    return tokens;
-//}
-//
-//void handle_http_request(int socket_fd) {
-//    char request[REQUEST_BUFFER_SIZE];
-//    memset(request, 0, REQUEST_BUFFER_SIZE);
-//    log_info("process request from client (fd = %d) ...", socket_fd);
-//    ssize_t n = read(socket_fd, request, REQUEST_BUFFER_SIZE - 1);
-//    if (n < 0) {
-//        log_error("read(): %s", strerror(errno));
-//        return;
-//    }
-//    request[n] = '\0';
-//
-//    int num_tokens;
-//    char** tokens = tokenize_string(request, "\r\n", &num_tokens);
-//    for (int i = 0; i < num_tokens; i++) {
-//        log_debug("token %d (len %lu): %s", i, strlen(tokens[i]), tokens[i]);
-//    }
-//
-//    char *response = "HTTP/1.1 200 OK\nContent-Type: text/plain\n\nHello, world!";
-//    send(socket_fd, response, strlen(response), 0);
-//    log_info("reply for client (fd = %d) sent", socket_fd);
-//}
-
 typedef struct task {
     int socket_fd;
 } task_t;
