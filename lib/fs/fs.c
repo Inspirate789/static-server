@@ -31,7 +31,7 @@ int copy_file(int src_fd, int dst_fd) {
             log_error("copy_file read from fd %d: %s", src_fd, strerror(errno));
             return errno;
         }
-        if (write(dst_fd, buf, FILE_COPY_BUFFER_SIZE) != n) {
+        if (write(dst_fd, buf, n) != n) {
             log_error("copy_file write to fd %d: %s", dst_fd, strerror(errno));
             return errno;
         }

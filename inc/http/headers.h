@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "header.h"
 
-#define AVERAGE_HTTP_HEADERS_COUNT 12
+#define AVERAGE_HTTP_HEADERS_COUNT 17
 
 #define HTTP_HEADER_NOT_FOUND (-1)
 

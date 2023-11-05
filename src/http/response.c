@@ -111,6 +111,20 @@ int http_response_set_attachment(http_response_t response, int fd) {
     return EXIT_SUCCESS;
 }
 
+int http_response_close_attachment(http_response_t response) {
+//    if (response == NULL) {
+//        log_error("response pointer is NULL");
+//        return EXIT_FAILURE;
+//    }
+
+    if (response->attachment_fd != -1) {
+        close(response->attachment_fd);
+        response->attachment_fd = -1;
+    }
+
+    return EXIT_SUCCESS;
+}
+
 static int http_response_check(http_response_t response) {
 //    if (response == NULL) {
 //        log_error("response pointer is NULL");
@@ -171,8 +185,9 @@ static int http_response_write_headers(http_headers_t headers, int fd) {
         }
 
         ssize_t n = write(fd, raw_header, strlen(raw_header));
+        size_t raw_len = strlen(raw_header);
         http_header_destroy_raw(&raw_header);
-        if (n != strlen(raw_header)) {
+        if (n != raw_len) {
             log_error("http_response_write write header %s to fd %d: %s", raw_header, fd, strerror(errno));
             return errno;
         }
@@ -188,7 +203,7 @@ static int http_response_write_headers(http_headers_t headers, int fd) {
 
 static int http_response_write_body(http_response_t response, int fd) {
     if (response->body != NULL || response->attachment_fd != -1) {
-        if (write(fd, "\r\n\r\n", 4) != 4) {
+        if (write(fd, "\r\n", 2) != 2) {
             log_error("http_response_write write \\r\\n\\r\\n to fd %d: %s", fd, strerror(errno));
             return errno;
         }

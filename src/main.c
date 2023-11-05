@@ -19,7 +19,6 @@
 
 static server_t server = NULL;
 static thread_pool_t thread_pool = NULL;
-static http_events_handler_t events_handler = NULL;
 
 typedef struct task {
     int socket_fd;
@@ -36,7 +35,7 @@ void *worker_thread(void *arg) {
         }
         int client_socket = ((task_t *)task)->socket_fd;
 
-        handle_http_event(events_handler, client_socket);
+        handle_http_event(client_socket);
 
         close(client_socket);
         ((task_t *)task)->socket_fd = -1;
@@ -65,7 +64,6 @@ void server_shutdown(server_t s)
     server_destroy(&s);
 
     thread_pool_destroy(&thread_pool);
-    http_events_handler_destroy(&events_handler);
 
     log_info("server stopped");
     exit(EXIT_SUCCESS);
@@ -94,9 +92,6 @@ int main() {
         return rc;
     }
     if ((rc = thread_pool_create(&thread_pool, THREAD_POOL_SIZE)) != 0) {
-        return rc;
-    }
-    if ((rc = http_events_handler_create(&events_handler)) != 0) {
         return rc;
     }
 
