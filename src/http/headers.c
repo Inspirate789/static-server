@@ -40,12 +40,13 @@ int http_headers_create(http_headers_t *headers, const size_t capacity) {
 }
 
 static int http_headers_set_capacity(http_headers_t headers, const size_t capacity) {
-    http_header_t *tmp = realloc(headers->headers, capacity);
+    http_header_t *tmp = realloc(headers->headers, capacity * sizeof(http_header_t));
     if (tmp == NULL) {
         log_error("http_headers_set_capacity realloc() headers: %s", strerror(errno));
         return errno;
     }
     headers->headers = tmp;
+    headers->capacity = capacity;
 
     return EXIT_SUCCESS;
 }
