@@ -146,15 +146,6 @@ static int http_request_parse_headers_and_body(http_request_t request, char **li
 }
 
 int http_request_create(http_request_t *request, const char *raw_request) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (raw_request == NULL) {
-//        log_error("raw_request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     clock_t start_time = clock();
 
     char **lines = NULL;
@@ -203,86 +194,31 @@ exit:
 }
 
 int http_request_compute_processing_time_ms(http_request_t request, clock_t *diff) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (diff == NULL) {
-//        log_error("diff pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *diff = clock() - request->start_time;
-
     return EXIT_SUCCESS;
 }
 
 int http_request_get_method(http_request_t request, http_method_t *method) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (method == NULL) {
-//        log_error("path pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *method = request->method;
-
     return EXIT_SUCCESS;
 }
 
 int http_request_get_path(http_request_t request, char **path) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (path == NULL) {
-//        log_error("path pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *path = request->path;
-
     return EXIT_SUCCESS;
 }
 
 int http_request_get_proto(http_request_t request, char **proto) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (proto == NULL) {
-//        log_error("proto pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *proto = request->proto;
-
     return EXIT_SUCCESS;
 }
 
 int http_request_find_header(http_request_t request, const char *name, char **value) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     return http_headers_find_header(request->headers, name, value);
 }
 
 int http_request_get_body(http_request_t request, char **body) {
-//    if (request == NULL) {
-//        log_error("request pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (body == NULL) {
-//        log_error("body pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *body = request->body;
-
     return EXIT_SUCCESS;
 }
 

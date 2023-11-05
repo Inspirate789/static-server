@@ -241,23 +241,6 @@ static int make_response(http_response_data_t data, http_response_t *response) {
 }
 
 int make_decision(http_request_t request, http_response_t *response, http_status_code_t *status_code) {
-//    if (maker == NULL) {
-//        log_error("maker is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (request == NULL) {
-//        log_error("request is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (response == NULL) {
-//        log_error("response is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (status_code == NULL) {
-//        log_error("status_code is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     http_response_data_t data = {
         .status_code = status_code,
         .path = NULL,

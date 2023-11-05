@@ -10,19 +10,6 @@ struct http_header {
 };
 
 int http_header_create(http_header_t *header, const char *name, const char *value) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (name == NULL) {
-//        log_error("name pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (value == NULL) {
-//        log_error("value pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     http_header_t tmp_header = malloc(sizeof(struct http_header));
     if (tmp_header == NULL) {
         log_error("http_header_create malloc() struct http_header: %s", strerror(errno));
@@ -50,15 +37,6 @@ int http_header_create(http_header_t *header, const char *name, const char *valu
 }
 
 int http_header_create_from_raw(http_header_t *header, const char *raw_header) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (raw_header == NULL) {
-//        log_error("raw_header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     char *raw = strdup(raw_header);
     if (raw == NULL) {
         log_error("http_header_create_from_raw strdup() raw_header: %s", strerror(errno));
@@ -85,15 +63,6 @@ int http_header_create_from_raw(http_header_t *header, const char *raw_header) {
 }
 
 int http_header_set_name(http_header_t header, const char *name) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (name == NULL) {
-//        log_error("name pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     char *tmp = strdup(name);
     if (header->name == NULL) {
         log_error("http_header_set_name strdup(): %s", strerror(errno));
@@ -106,30 +75,11 @@ int http_header_set_name(http_header_t header, const char *name) {
 }
 
 int http_header_get_name(http_header_t header, char **name) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (name == NULL) {
-//        log_error("name pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *name = header->name;
-
     return EXIT_SUCCESS;
 }
 
 int http_header_set_value(http_header_t header, const char *value) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (value == NULL) {
-//        log_error("value pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     char *tmp = strdup(value);
     if (header->name == NULL) {
         log_error("http_header_set_value strdup(): %s", strerror(errno));
@@ -142,30 +92,11 @@ int http_header_set_value(http_header_t header, const char *value) {
 }
 
 int http_header_get_value(http_header_t header, char **value) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (value == NULL) {
-//        log_error("value pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     *value = header->value;
-
     return EXIT_SUCCESS;
 }
 
 int http_header_make_raw(http_header_t header, char **raw_header) {
-//    if (header == NULL) {
-//        log_error("header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-//    if (raw_header == NULL) {
-//        log_error("raw_header pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     char *raw = malloc(strlen(header->name) + strlen(header->value) + 2);
     if (raw == NULL) {
         log_error("http_header_make_raw malloc(): %s", strerror(errno));

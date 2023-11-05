@@ -17,14 +17,6 @@ struct thread_pool {
 };
 
 int thread_pool_create(thread_pool_t *pool, size_t capacity) {
-//    if (pool == NULL) {
-//        log_error("thread pool pointer is NULL");
-//        return EXIT_FAILURE;
-//    } else if (*pool != NULL) {
-//        log_warn("thread pool is already initialized");
-//        return EXIT_FAILURE;
-//    }
-
     thread_pool_t tmp_pool = malloc(sizeof(struct thread_pool));
     if (tmp_pool == NULL) {
         log_error("thread_pool_init malloc() thread_pool: %s", strerror(errno));
@@ -51,11 +43,6 @@ int thread_pool_create(thread_pool_t *pool, size_t capacity) {
 }
 
 int thread_pool_start(thread_pool_t pool, void *(*worker_thread)(void *)) {
-//    if (pool == NULL) {
-//        log_error("pool pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     for (int i = 0; i < pool->capacity; i++) {
         if (pthread_create(&pool->threads[i], NULL, worker_thread, pool) != 0) {
             log_error("pthread_create(): %s", strerror(errno));
@@ -67,11 +54,6 @@ int thread_pool_start(thread_pool_t pool, void *(*worker_thread)(void *)) {
 }
 
 int thread_pool_submit(thread_pool_t pool, thread_pool_task_t task) {
-//    if (pool == NULL) {
-//        log_error("pool pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     log_debug("try to put task to pool...");
     pthread_mutex_lock(&queue_mutex);
 
@@ -90,11 +72,6 @@ int thread_pool_submit(thread_pool_t pool, thread_pool_task_t task) {
 }
 
 int thread_pool_take_task(thread_pool_task_t *task, thread_pool_t pool) {
-//    if (pool == NULL) {
-//        log_error("pool pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     log_debug("try to take task from pool...");
     pthread_mutex_lock(&queue_mutex);
 
@@ -115,11 +92,6 @@ int thread_pool_take_task(thread_pool_task_t *task, thread_pool_t pool) {
 }
 
 int thread_pool_stop(thread_pool_t pool) {
-//    if (pool == NULL) {
-//        log_error("pool pointer is NULL");
-//        return EXIT_FAILURE;
-//    }
-
     log_info("stop threads in pool...");
     for (int i = 0; i < pool->capacity; i++) {
         int rc = EXIT_SUCCESS;

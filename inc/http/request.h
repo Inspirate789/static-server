@@ -43,7 +43,6 @@ int http_request_get_path(http_request_t request, char **path);
 int http_request_get_proto(http_request_t request, char **proto);
 int http_request_find_header(http_request_t request, const char *name, char **value);
 int http_request_get_body(http_request_t request, char **body);
-// int http_request_get_headers(http_request_t request, http_headers_t *headers);
 void http_request_destroy(http_request_t *request);
 
 #endif //HTTP_REQUEST_H
