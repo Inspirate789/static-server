@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "../../inc/http/header.h"
-#include "../../lib/log/log.h"
+#include "header.h"
+#include "log.h"
 
 struct http_header {
     char *name;
@@ -97,7 +97,7 @@ int http_header_get_value(http_header_t header, char **value) {
 }
 
 int http_header_make_raw(http_header_t header, char **raw_header) {
-    char *raw = malloc(strlen(header->name) + strlen(header->value) + 2);
+    char *raw = malloc(strlen(header->name) + strlen(header->value) + 3);
     if (raw == NULL) {
         log_error("http_header_make_raw malloc(): %s", strerror(errno));
         return errno;
@@ -106,6 +106,7 @@ int http_header_make_raw(http_header_t header, char **raw_header) {
     strncpy(raw, header->name, strlen(header->name));
     strncpy(raw + strlen(header->name), ": ", 2);
     strncpy(raw + strlen(header->name) + 2, header->value, strlen(header->value));
+    raw[strlen(header->name) + strlen(header->value) + 2] = '\0';
 
     *raw_header = raw;
 

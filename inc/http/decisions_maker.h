@@ -1,8 +1,8 @@
 #ifndef DECISIONS_MAKER_H
 #define DECISIONS_MAKER_H
 
-#include "../../inc/http/request.h"
-#include "../../inc/http/response.h"
+#include "request.h"
+#include "response.h"
 
 #define STATIC_PATH "/tmp/static"
 

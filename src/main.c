@@ -6,16 +6,15 @@
 #include <pthread.h>
 #include <errno.h>
 
-#include "../inc/app/server.h"
-#include "../inc/app/thread_pool.h"
-#include "../inc/http/events_handler.h"
-#include "../lib/log/log.h"
+#include "server.h"
+#include "thread_pool.h"
+#include "events_handler.h"
+#include "log.h"
 
 #define PORT 8080
 #define REQUEST_BUFFER_SIZE 1024
 #define THREAD_POOL_SIZE 7
 #define CONN_QUEUE_LEN 1024
-#define LOG_USE_COLOR // TODO
 
 static server_t server = NULL;
 static thread_pool_t thread_pool = NULL;
@@ -85,7 +84,7 @@ void signal_handler(int signum)
     }
 }
 
-int main() {
+int main(void) {
     log_set_level(LOG_INFO);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {

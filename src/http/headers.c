@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "../../inc/http/headers.h"
-#include "../../lib/log/log.h"
+#include "headers.h"
+#include "log.h"
 
 #define MEMORY_EXPANSION_RATE 1.25
 

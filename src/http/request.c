@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <errno.h>
-#include "../../inc/http/request.h"
-#include "../../inc/http/headers.h"
-#include "../../lib/log/log.h"
+#include "request.h"
+#include "headers.h"
+#include "log.h"
 
 struct http_request {
     http_method_t method;

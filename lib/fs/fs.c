@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include "fs.h"
-#include "../log/log.h"
+#include "log.h"
 
 file_type_t detect_file_type(char *path) {
     struct stat s;

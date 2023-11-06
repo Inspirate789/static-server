@@ -2,9 +2,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "../../inc/http/decisions_maker.h"
-#include "../../lib/fs/fs.h"
-#include "../../lib/log/log.h"
+#include "decisions_maker.h"
+#include "fs.h"
+#include "log.h"
 
 typedef int (*setup_response_template_t)(http_response_t*, http_proto_t);
 

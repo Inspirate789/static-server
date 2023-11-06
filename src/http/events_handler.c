@@ -2,10 +2,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include "../../inc/http/events_handler.h"
-#include "../../inc/http/decisions_maker.h"
-#include "../../inc/http/request.h"
-#include "../../lib/log/log.h"
+#include "events_handler.h"
+#include "decisions_maker.h"
+#include "request.h"
+#include "log.h"
 
 static int read_http_request(int socket_fd, char *raw_request) {
     ssize_t n = read(socket_fd, raw_request, REQUEST_BUFFER_SIZE - 1);

@@ -5,9 +5,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-
-#include "../../inc/app/server.h"
-#include "../../lib/log/log.h"
+#include "server.h"
+#include "log.h"
 
 struct server {
     int server_socket_fd;

@@ -1,10 +1,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include "../../inc/http/response.h"
-#include "../../inc/http/headers.h"
-#include "../../lib/fs/fs.h"
-#include "../../lib/log/log.h"
+#include "response.h"
+#include "headers.h"
+#include "fs.h"
+#include "log.h"
 
 struct http_response {
     http_proto_t proto;

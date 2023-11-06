@@ -1,10 +1,9 @@
-#include "../../inc/app/thread_pool.h"
-#include "../../lib/log/log.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include "thread_pool.h"
+#include "log.h"
 
 pthread_mutex_t queue_mutex;
 pthread_cond_t queue_cond;
