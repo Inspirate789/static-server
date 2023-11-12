@@ -6,13 +6,14 @@
 #include "fs.h"
 #include "log.h"
 
-file_type_t detect_file_type(char *path) {
+file_type_t get_file_info(char *path, size_t *size) {
     struct stat s;
     int rc = stat(path, &s);
     if (rc != 0) {
         log_error("stat %s: %s", path, strerror(errno));
         return UNKNOWN;
     }
+    *size = s.st_size;
 
     if (S_ISREG(s.st_mode)) {
         return REGULAR;

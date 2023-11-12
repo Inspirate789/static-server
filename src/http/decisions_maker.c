@@ -200,6 +200,7 @@ typedef struct {
     http_proto_t proto;
     bool need_body;
     char *content_type;
+    size_t content_length;
     bool already_handled;
 } http_response_data_t;
 
@@ -216,6 +217,13 @@ static int make_response(http_response_data_t data, http_response_t *response) {
 
     if (!data.already_handled && *data.status_code == HTTP_OK) {
         if (http_response_set_header(*response, "Content-Type", data.content_type) != EXIT_SUCCESS) {
+            *data.status_code = HTTP_INTERNAL_SERVER_ERROR;
+            data.already_handled = true;
+            return make_response(data, response);
+        }
+        char buf[20] = {'\0'};
+        snprintf(buf, 20, "%lu", data.content_length);
+        if (http_response_set_header(*response, "Content-Length", buf) != EXIT_SUCCESS) {
             *data.status_code = HTTP_INTERNAL_SERVER_ERROR;
             data.already_handled = true;
             return make_response(data, response);
@@ -275,7 +283,7 @@ int make_decision(http_request_t request, http_response_t *response, http_status
         goto response;
     }
 
-    file_type_t type = detect_file_type(data.path);
+    file_type_t type = get_file_info(data.path, &data.content_length);
     if (type == DIRECTORY) {
         *status_code = HTTP_NOT_IMPLEMENTED;
         goto response;

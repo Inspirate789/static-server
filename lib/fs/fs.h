@@ -9,7 +9,7 @@ typedef enum file_type {
     UNKNOWN,
 } file_type_t;
 
-file_type_t detect_file_type(char *path);
+file_type_t get_file_info(char *path, size_t *size);
 int copy_file(int src_fd, int dst_fd);
 
 #endif //FS_H
