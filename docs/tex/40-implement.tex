@@ -1,0 +1,243 @@
+\chapter{Технологическая часть}
+
+В данном разделе будут описаны детали реализации и развёртывания ПО, а также приведены листинги кода.
+
+\section{Средства реализации}
+
+Для реализации статического сервера был выбран язык C в соответствии с заданием на курсовую работу. Для мультиплексирования клиентских соединений был выбран мультиплексор select, для параллелизации обработки запросов --- пул потоков.
+
+Для контроля качества кода использовался отладчик использования памяти valgrind \cite{valgrind}.
+
+\section{Детали реализации}
+
+\subsection{Сервер}
+
+В листингах \ref{lst:server1} и \ref{lst:server2} представлены функции, реализующие обработку клиентских запросов с использованием мультиплексора select.
+
+\begin{lstlisting}[
+	caption={Функция создания сервера},
+	label=lst:server1,
+	]
+	int server_create(server_t *server) {
+		server_t tmp_server = malloc(sizeof(struct server));
+		if (tmp_server == NULL) {
+			log_error("server_init malloc(): %s", strerror(errno));
+			return errno;
+		}
+		
+		if ((tmp_server->server_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) 
+			== 0) {
+			log_error("socket(): %s", strerror(errno));
+			free(*server);
+			return EXIT_FAILURE;
+		}
+		
+		int opt = IP_PMTUDISC_WANT;
+		if (setsockopt(tmp_server->server_socket_fd, SOL_SOCKET, 
+			SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
+			log_error("setsockopt(): %s", strerror(errno));
+			free(tmp_server);
+			return EXIT_FAILURE;
+		}
+		
+		tmp_server->is_running = false;
+		*server = tmp_server;
+		
+		return EXIT_SUCCESS;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[
+	caption={Функция запуска сервера},
+	label=lst:server2,
+	]
+	int server_run(server_t server, int port, int conn_queue_len, 
+		void(*handle_request)(int)) {
+		struct sockaddr_in address;
+		address.sin_family = AF_INET;
+		address.sin_addr.s_addr = INADDR_ANY;
+		address.sin_port = htons(port);
+		
+		if (bind(server->server_socket_fd, (struct sockaddr*)&address, 
+			sizeof(address)) == -1) {
+			log_error("bind(): %s", strerror(errno));
+			return errno;
+		}
+		
+		if (listen(server->server_socket_fd, conn_queue_len) == -1) {
+			log_error("listen(): %s", strerror(errno));
+			return errno;
+		}
+		
+		log_info("server started on port %d; wait for connections...", 
+			port);
+		
+		server->is_running = true;
+		fd_set client_fds;
+		while (server->is_running) {
+			FD_ZERO(&client_fds);
+			FD_SET(server->server_socket_fd, &client_fds);
+			
+			if (select(server->server_socket_fd + 1, &client_fds, NULL, 
+				NULL, NULL) == -1) {
+				log_error("select(): %s", strerror(errno));
+				return errno;
+			}
+			
+			int client_socket_fd = -1;
+			if (FD_ISSET(server->server_socket_fd, &client_fds)) {
+				if ((client_socket_fd = accept(server->server_socket_fd, 
+					(struct sockaddr*)NULL, NULL)) == -1) {
+					log_error("accept(): %s", strerror(errno));
+					return errno;
+				}
+				
+				handle_request(client_socket_fd);
+			}
+		}
+		
+		return EXIT_SUCCESS;
+	}
+\end{lstlisting}
+
+\subsection{Пул потоков}
+
+В листингах \ref{lst:pool1}-\ref{lst:pool3} представлены функции, реализующие обработку клиентских запросов с использованием мультиплексора select.
+
+\begin{lstlisting}[
+	caption={Функция запуска пула потоков},
+	label=lst:pool1,
+	]
+	int thread_pool_start(thread_pool_t pool, 
+		void *(*worker_thread)(void *)) {
+		for (int i = 0; i < pool->capacity; i++) {
+			if (pthread_create(&pool->threads[i], NULL, worker_thread, pool) 
+				!= 0) {
+				log_error("pthread_create(): %s", strerror(errno));
+				return errno;
+			}
+		}
+		
+		return EXIT_SUCCESS;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[
+	caption={Функция извлечения задачи из очереди},
+	label=lst:pool2,
+	]
+	int thread_pool_take_task(thread_pool_task_t *task, thread_pool_t pool) 
+	{
+		log_debug("try to take task from pool...");
+		pthread_mutex_lock(&queue_mutex);
+		
+		log_debug("wait for any task pool...");
+		while (pool->size == 0) {
+			pthread_cond_wait(&queue_cond, &queue_mutex);
+		}
+		
+		thread_pool_task_t t = pool->tasks[--pool->size];
+		
+		log_debug("task taken from pool");
+		pthread_cond_signal(&queue_cond);
+		pthread_mutex_unlock(&queue_mutex);
+		
+		*task = t;
+		
+		return EXIT_SUCCESS;
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[
+	caption={Функция добавления задачи в очередь на выполнение},
+	label=lst:pool3,
+	]
+	int thread_pool_submit(thread_pool_t pool, thread_pool_task_t task) {
+		log_debug("try to put task to pool...");
+		pthread_mutex_lock(&queue_mutex);
+		
+		log_debug("wait for place in pool to put task...");
+		while (pool->size >= pool->capacity) {
+			pthread_cond_wait(&queue_cond, &queue_mutex);
+		}
+		
+		pool->tasks[pool->size++] = task;
+		
+		log_debug("task added to pool");
+		pthread_cond_signal(&queue_cond);
+		pthread_mutex_unlock(&queue_mutex);
+		
+		return EXIT_SUCCESS;
+	}
+\end{lstlisting}
+
+
+
+\section{Поддерживаемые запросы}
+
+Разработанный веб-сервер обрабатывает запросы GET и HEAD. В первом случае клиент получает в теле ответа запрошенный файл, во втором --- только заголовки ответа Content-Type и Content-Length. Ниже перечислены поддерживаемые статусы ответов сервера.
+
+\begin{itemize}[label*=---]
+	\item 200 --- успешное завершение обработки запроса.
+	\item 403 --- доступ к запрошенному файлу запрещён.
+	\item 404 --- запрашиваемый файл не найден.
+	\item 405 --- неподдерживаемый HTTP-метод (POST, PUT и т.д.).
+	\item 500 --- внутренняя ошибка сервера.
+	\item 501 --- запрошен неподдерживаемый тип файла.
+\end{itemize}
+
+Разработанный сервер поддерживает следующие форматы файлов (типы контента, Content-Type):
+
+\begin{itemize}[label*=---]
+	\item html (text/html);
+	\item css (text/css);
+	\item js (text/javascript);
+	\item png (image/png);
+	\item jpg (image/jpg);
+	\item jpeg (image/jpe);
+	\item gif (image/gif);
+	\item svg (image/svg);
+	\item swf (application/x-shockwave-flash);
+	\item mp4 (application/x-shockwave-flash).
+\end{itemize}
+
+
+
+\section{Развёртывание}
+
+Запуск разработанного приложения осуществлялся с помощью системы контейнеризации Docker \cite{docker}. Файл для сборки образа приложения представлен в листинге \ref{lst:deploy1}.
+
+\begin{lstlisting}[
+	caption={Dockerfile образа приложения},
+	label=lst:deploy1,
+	]
+	FROM gcc:13.2.0-bookworm AS build
+	WORKDIR /build
+	RUN --mount=target=. \
+	gcc -DLOG_USE_COLOR \
+		-std=gnu99 -Wall -Wpedantic -Wextra -Wfloat-equal \
+		-Wfloat-conversion -Wvla  \
+		-static \
+		-Iinc/app -Iinc/http -Ilib/fs -Ilib/log \
+		-O2 -o /app  \
+		src/main.c src/app/* src/http/* lib/fs/fs.c lib/log/log.c
+	
+	FROM scratch
+	COPY --from=build /app /app
+	EXPOSE 8080
+	ENTRYPOINT ["/app"]
+\end{lstlisting}
+
+\clearpage
+В листинге \ref{lst:deploy2} представлены команды для сборки образа приложения и запуска соответствующего контейнера.
+
+\begin{lstlisting}[
+	caption={Команды сборки образа приложения и запуска контейнера},
+	label=lst:deploy2,
+	]
+	docker build -t static-server .
+	docker run --name static-server --volume=./media:/tmp/static -d \
+		-p 8080:8080 --cpus=8 static-server
+\end{lstlisting}
+
+

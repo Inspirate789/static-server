@@ -40,8 +40,6 @@ void *worker_thread(void *arg) {
         ((task_t *)task)->socket_fd = -1;
         free(task);
     }
-
-    pthread_exit(&rc);
 }
 
 void handle_request(int socket_fd) {
@@ -85,7 +83,7 @@ void signal_handler(int signum)
 }
 
 int main(void) {
-    log_set_level(LOG_DEBUG);
+    log_set_level(LOG_INFO);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {
         return rc;

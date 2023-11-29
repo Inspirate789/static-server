@@ -283,6 +283,11 @@ int make_decision(http_request_t request, http_response_t *response, http_status
         goto response;
     }
 
+    if (strlen(data.path) == strlen(STATIC_PATH) ||
+        (strlen(data.path) - strlen(STATIC_PATH) == 1 && data.path[strlen(data.path - 1)] == '/')) {
+        data.path = STATIC_PATH "/index.html";
+    }
+
     file_type_t type = get_file_info(data.path, &data.content_length);
     if (type == DIRECTORY) {
         *status_code = HTTP_NOT_IMPLEMENTED;
