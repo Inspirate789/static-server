@@ -83,7 +83,7 @@ void signal_handler(int signum)
 }
 
 int main(void) {
-    log_set_level(LOG_INFO);
+    // log_set_level(LOG_INFO);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {
         return rc;
