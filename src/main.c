@@ -25,7 +25,8 @@ typedef struct task {
 
 void *worker_thread(void *arg) {
     thread_pool_t pool = (thread_pool_t)arg;
-    int rc = EXIT_SUCCESS;
+    pthread_cleanup_push(thread_pool_cleanup_handler, pool);
+    int rc;
     while (1) {
         void *task = NULL;
         if ((rc = thread_pool_take_task(&task, pool)) != EXIT_SUCCESS) {
@@ -40,6 +41,7 @@ void *worker_thread(void *arg) {
         ((task_t *)task)->socket_fd = -1;
         free(task);
     }
+    pthread_cleanup_pop(0);
 }
 
 void handle_request(int socket_fd) {
@@ -57,10 +59,11 @@ void server_shutdown(server_t s)
 {
     log_info("shutdown server...");
 
+    thread_pool_stop(thread_pool);
+    thread_pool_destroy(&thread_pool);
+
     server_stop(s);
     server_destroy(&s);
-
-    thread_pool_destroy(&thread_pool);
 
     log_info("server stopped");
     exit(EXIT_SUCCESS);
@@ -83,7 +86,7 @@ void signal_handler(int signum)
 }
 
 int main(void) {
-    log_set_level(LOG_INFO);
+    log_set_level(LOG_DEBUG);
     int rc;
     if ((rc = server_create(&server)) != EXIT_SUCCESS) {
         return rc;

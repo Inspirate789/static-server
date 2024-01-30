@@ -90,7 +90,7 @@ static int http_response_check(http_response_t response) {
 }
 
 static int http_response_write_status_line(http_response_t response, int fd) {
-    if (write(fd, response->proto, strlen(response->proto)) != strlen(response->proto)) {
+    if (write(fd, response->proto, strlen(response->proto)) != (ssize_t)strlen(response->proto)) {
         log_error("http_response_write write proto %s to fd %d: %s", response->proto, fd, strerror(errno));
         return errno;
     }
@@ -100,7 +100,7 @@ static int http_response_write_status_line(http_response_t response, int fd) {
         return errno;
     }
 
-    if (write(fd, response->status_code, strlen(response->status_code)) != strlen(response->status_code)) {
+    if (write(fd, response->status_code, strlen(response->status_code)) != (ssize_t)strlen(response->status_code)) {
         log_error("http_response_write write status_code %s to fd %d: %s", response->status_code, fd, strerror(errno));
         return errno;
     }
@@ -132,7 +132,7 @@ static int http_response_write_headers(http_headers_t headers, int fd) {
         }
 
         ssize_t n = write(fd, raw_header, strlen(raw_header));
-        size_t raw_len = strlen(raw_header);
+        ssize_t raw_len = strlen(raw_header);
         http_header_destroy_raw(&raw_header);
         if (n != raw_len) {
             log_error("http_response_write write header %s to fd %d: %s", raw_header, fd, strerror(errno));
@@ -159,7 +159,7 @@ static int http_response_write_body(http_response_t response, int fd) {
     }
 
     if (response->body != NULL) {
-        if (write(fd, response->body, strlen(response->body)) != strlen(response->body)) {
+        if (write(fd, response->body, strlen(response->body)) != (ssize_t)strlen(response->body)) {
             log_error("http_response_write write body to fd %d: %s", fd, strerror(errno));
             return errno;
         }

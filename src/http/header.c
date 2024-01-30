@@ -103,9 +103,9 @@ int http_header_make_raw(http_header_t header, char **raw_header) {
         return errno;
     }
 
-    strncpy(raw, header->name, strlen(header->name));
-    strncpy(raw + strlen(header->name), ": ", 2);
-    strncpy(raw + strlen(header->name) + 2, header->value, strlen(header->value));
+    strcpy(raw, header->name);
+    strcpy(raw + strlen(header->name), ": ");
+    strcpy(raw + strlen(header->name) + 2, header->value);
     raw[strlen(header->name) + strlen(header->value) + 2] = '\0';
 
     *raw_header = raw;

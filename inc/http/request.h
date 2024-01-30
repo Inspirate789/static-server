@@ -6,6 +6,7 @@
 #define INVALID_HTTP_REQUEST (-2)
 
 typedef enum http_method {
+    UNKNOWN_HTTP_METHOD,
     GET,        // The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
     HEAD,       // The HEAD method asks for a response identical to a GET request, but without the response body.
     POST,       // The POST method submits an entity to the specified resource, often causing a change in state or side effects on the server.
@@ -29,7 +30,7 @@ static inline char *http_method_mapping(http_method_t method) {
         "TRACE",
         "PATCH",
     };
-    return mapping[method];
+    return mapping[method - 1];
 }
 
 typedef char *http_proto_t;

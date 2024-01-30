@@ -68,7 +68,7 @@ static http_method_t http_request_parse_method(const char *method) {
     }
 
     log_error("http request contains unknown method");
-    return INVALID_HTTP_REQUEST;
+    return UNKNOWN_HTTP_METHOD;
 }
 
 static int http_request_parse_first_line(http_request_t request, char *line) {
@@ -80,7 +80,7 @@ static int http_request_parse_first_line(http_request_t request, char *line) {
     *end = '\0';
     request->method = http_request_parse_method(start);
     *end = ' ';
-    if (request->method == INVALID_HTTP_REQUEST) {
+    if (request->method == UNKNOWN_HTTP_METHOD) {
         return INVALID_HTTP_REQUEST;
     }
 
